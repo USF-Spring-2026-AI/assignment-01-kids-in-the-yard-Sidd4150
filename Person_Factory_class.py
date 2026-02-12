@@ -91,13 +91,57 @@ class PersonFactory():
 
         while queue:
             curr_person = queue.popleft()
-            kids, is_married = self.chance_kids(self.get_decade(curr_person.year_born))
+            _, is_married = self.chance_kids(self.get_decade(curr_person.year_born))
 
             if is_married == "marry":
                 curr_person.partner = self.createChildren(curr_person.year_born + random.randint(-10,10), None)
                 curr_person.partner.partner = curr_person
 
-         
+                # print("Partner address START:",curr_person.partner)
+                # print("Partners Name:", curr_person.partner.firstN)
+                # print("Partners LastName:", curr_person.partner.lastN)
+                # print("Partners YearBorn:", curr_person.partner.year_born)
+                # print("Partners Death:", curr_person.partner.death)
+                # print("Partners Age:", curr_person.partner.age)
+
+                if curr_person.age > curr_person.partner.age:
+                    number_kids,_ = self.chance_kids(self.get_decade(curr_person.year_born))
+                    for i in range(number_kids):
+                        self.createChildren(curr_person.year_born,curr_person)
+
+                        if curr_person.children[0].year_born > 2120:
+                            break
+
+                        for child in curr_person.children:
+                            queue.append(child)
+                elif curr_person.age < curr_person.partner.age:
+                    number_kids,_ = self.chance_kids(self.get_decade(curr_person.partner.year_born))
+                    for i in range(number_kids):
+                        self.createChildren(curr_person.partner.year_born,curr_person.partner)
+
+                        if curr_person.partner.children[0].year_born > 2100:
+                            break
+
+                        for child in curr_person.partner.children:
+                            queue.append(child)
+            else:
+                number_kids, _ = self.chance_kids(self.get_decade(curr_person.year_born))
+                for i in range(number_kids):
+                    self.createChildren(curr_person.year_born,curr_person)
+
+                    if curr_person.children[0].year_born > 2120:
+                        break
+
+                    for child in curr_person.children:
+                        queue.append(child)
+
+     
+
+                        
+                        
+            
+
+
 
           
     def createChildren(self,Elder_Age,Parent):
