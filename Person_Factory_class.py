@@ -49,7 +49,7 @@ class PersonFactory():
             None,
             Molly_age
         ) 
-        
+        self.familyTree = Desmond_Jones
         #initial Partner assignment
         Desmond_Jones.partner = Molly_Jones
         Molly_Jones.partner = Desmond_Jones
@@ -95,6 +95,8 @@ class PersonFactory():
 
             if is_married == "marry":
                 curr_person.partner = self.createChildren(curr_person.year_born + random.randint(-10,10), None)
+                if curr_person.partner == None:
+                    break
                 curr_person.partner.partner = curr_person
 
                 # print("Partner address START:",curr_person.partner)
@@ -107,33 +109,37 @@ class PersonFactory():
                 if curr_person.age > curr_person.partner.age:
                     number_kids,_ = self.chance_kids(self.get_decade(curr_person.year_born))
                     for i in range(number_kids):
-                        self.createChildren(curr_person.year_born,curr_person)
+                        new_child = self.createChildren(curr_person.year_born,curr_person)
 
-                        if curr_person.children[0].year_born > 2120:
-                            break
-
-                        for child in curr_person.children:
-                            queue.append(child)
+                        if new_child == None:
+                            continue
+                        curr_person.partner.children = curr_person.children
+                        print("Married:", new_child.year_born, new_child.firstN)
+                        #for child in curr_person.children:
+                        
+                        queue.append(new_child)
                 elif curr_person.age < curr_person.partner.age:
                     number_kids,_ = self.chance_kids(self.get_decade(curr_person.partner.year_born))
                     for i in range(number_kids):
-                        self.createChildren(curr_person.partner.year_born,curr_person.partner)
+                        new_child = self.createChildren(curr_person.partner.year_born,curr_person.partner)
 
-                        if curr_person.partner.children[0].year_born > 2100:
+                        if new_child == None:
                             break
-
-                        for child in curr_person.partner.children:
-                            queue.append(child)
+                        curr_person.children = curr_person.partner.children
+                        print("Married:", new_child.year_born, new_child.firstN)
+                        #for child in curr_person.partner.children:
+                        
+                        queue.append(new_child)
             else:
                 number_kids, _ = self.chance_kids(self.get_decade(curr_person.year_born))
                 for i in range(number_kids):
-                    self.createChildren(curr_person.year_born,curr_person)
+                    new_child = self.createChildren(curr_person.year_born,curr_person)
 
-                    if curr_person.children[0].year_born > 2120:
-                        break
-
-                    for child in curr_person.children:
-                        queue.append(child)
+                    if new_child == None:
+                        continue
+                    print("UnMarried:", new_child.year_born, new_child.firstN)
+                    
+                    queue.append(new_child)
 
      
 
@@ -150,7 +156,8 @@ class PersonFactory():
             year_born = Elder_Age
         else:
             year_born = math.ceil(Elder_Age) + random.randint(25,45) 
-        
+        if year_born > 2120:
+            return None
         death = year_born + float(self.lifeProb[str(year_born)])+ random.randint(-10,10)
         
         decade_key = self.get_decade(year_born)
@@ -201,7 +208,7 @@ class PersonFactory():
     
     def first_gen(self, decade,gender):
         
-        decade_values = []
+     
         
         gendered_options = [val for val in self.firstNames[decade] if val[0] == gender]
    
@@ -257,9 +264,5 @@ class PersonFactory():
                 self.lifeProb[rows[0]] = (rows[1]) 
                 
         
-        
-    def print(self):
-        print(self.familyTree)
-    
-        
-
+            
+   
