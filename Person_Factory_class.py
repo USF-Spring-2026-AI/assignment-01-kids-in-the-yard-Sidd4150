@@ -9,12 +9,6 @@ from Person_class import Person
 class PersonFactory():
     def __init__(self):
         
-        #Desmond_Jones = Person(1950,61, "Desmond", "Jones", None, None)
-        #Molly_Jones = Person(1950,61, "Molly", "Jones", None, None) 
-        #Desmond_Jones.partner = Molly_Jones
-        #Molly_Jones.partner = Desmond_Jones
-        #self.Tree = create_family_tree()
-        
         self.firstNames = defaultdict(list)
         self.lastNames = defaultdict(list)
         self.genderProb = defaultdict(list)
@@ -24,63 +18,43 @@ class PersonFactory():
         
     def create_family_tree(self):
         #initial death
+        #TODO: make death calculation into function
         Molly_death = 1950 + float(self.lifeProb["1950"]) + random.randint(-10,10)
         Desmond_death = 1950 + float(self.lifeProb["1950"]) + random.randint(-10,10)
         
+        
         #intial Ages
+        #TODO: make age calculation into function 
         Molly_age = Molly_death - 1950
         Desmond_age = Desmond_death - 1950
-        
-        Desmond_Jones = Person(
-            1950,
-            Desmond_death,
-            "Desmond", 
-            "Jones", 
-            None,
-            None, 
-            Desmond_age
-        )
-        Molly_Jones = Person(
-            1950,
-            Molly_death,
-            "Molly",
-            "Jones",
-            None,
-            None,
-            Molly_age
-        ) 
+   
+    
+        Desmond_Jones = self.createChildren(None,None)
+        Desmond_Jones.firstN = "Desmond"
+        Desmond_Jones.lastN = "Jones"
+   
+        Molly_Jones = self.createChildren(None,None)
+        Molly_Jones.firstN = "Molly"
+        Molly_Jones.lastN = "Jones"
         self.familyTree = Desmond_Jones
         #initial Partner assignment
         Desmond_Jones.partner = Molly_Jones
         Molly_Jones.partner = Desmond_Jones
         
         #initial Children 
-        if Molly_Jones.age >= Desmond_Jones.age:
-            
-            year = Molly_Jones.year_born
-            decade_key = self.get_decade(year)
-            print(decade_key)
-            
-            number_kids,_ = self.chance_kids(decade_key)
-            print(number_kids)
+        year = Molly_Jones.year_born
+        decade_key = self.get_decade(year)
+        print(decade_key)
+        
+        number_kids,_ = self.chance_kids(decade_key)
+        print(number_kids)
 
-            for _ in range(number_kids):
-                self.createChildren(Molly_Jones.year_born,Molly_Jones)
+        for _ in range(number_kids):
+            self.createChildren(Molly_Jones.year_born,Molly_Jones)
 
-            Desmond_Jones.children =  Molly_Jones.children
+        Desmond_Jones.children =  Molly_Jones.children
 
-        else:
-            year = Desmond_Jones.year_born
-            decade_key = self.get_decade(year)
-            print(decade_key)
-            
-            number_kids,_ = self.chance_kids(decade_key)
-            print("Number of kids", number_kids)
 
-            for _ in range(number_kids):
-                self.createChildren(Desmond_Jones.year_born,Desmond_Jones)
-            
-            Molly_Jones.children = Desmond_Jones.children
 
         #Tree Building
         # Looked up built in python queue found at https://www.geeksforgeeks.org/python/queue-in-python/
@@ -90,6 +64,7 @@ class PersonFactory():
             queue.append(child)
 
         while queue:
+
             curr_person = queue.popleft()
             _, is_married = self.chance_kids(self.get_decade(curr_person.year_born))
 
@@ -99,14 +74,8 @@ class PersonFactory():
                     break
                 curr_person.partner.partner = curr_person
 
-                # print("Partner address START:",curr_person.partner)
-                # print("Partners Name:", curr_person.partner.firstN)
-                # print("Partners LastName:", curr_person.partner.lastN)
-                # print("Partners YearBorn:", curr_person.partner.year_born)
-                # print("Partners Death:", curr_person.partner.death)
-                # print("Partners Age:", curr_person.partner.age)
 
-                if curr_person.age < curr_person.partner.age:
+                if curr_person.age > curr_person.partner.age:
                     number_kids,_ = self.chance_kids(self.get_decade(curr_person.year_born))
                     for _ in range(number_kids):
                         new_child = self.createChildren(curr_person.year_born,curr_person)
@@ -119,7 +88,7 @@ class PersonFactory():
                         queue.append(new_child)
                     curr_person.partner.children = curr_person.children
 
-                elif curr_person.age >= curr_person.partner.age:
+                elif curr_person.age <= curr_person.partner.age:
                     number_kids,_ = self.chance_kids(self.get_decade(curr_person.partner.year_born))
                     for _ in range(number_kids):
                         new_child = self.createChildren(curr_person.partner.year_born,curr_person.partner)
@@ -146,10 +115,13 @@ class PersonFactory():
           
     def createChildren(self,Elder_Age,Parent):
         #Desmond_Jones = Person(1950, Desmond_death, "Desmond", "Jones", None, None, Desmond_age)
-        if Parent == None:
+        if not Parent and not Elder_Age:
+            year_born = 1950
+        elif Parent == None:
             year_born = Elder_Age +  random.randint(-5,5)
         else:
             year_born = math.ceil(Elder_Age) + random.randint(25,45) 
+        #Make sure not past 2120
         if year_born > 2120:
             return None
         
@@ -247,4 +219,5 @@ class PersonFactory():
             self.lifeProb[rows[0]] = (rows[1]) 
             
         
+            
   
