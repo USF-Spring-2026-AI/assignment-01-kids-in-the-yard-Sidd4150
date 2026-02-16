@@ -1,7 +1,7 @@
-from Person_class import Person
-from Person_Factory_class import PersonFactory
+from FamilyTree_class import FamilyTree
 
-familyCreation = PersonFactory()
-familyCreation.get_files()
-familyCreation.create_family_tree()
+familyCreation = FamilyTree()
+
+familyCreation.create_initial_people()
+familyCreation.create_family_tree(familyCreation.person1)
 familyCreation.print_tree()

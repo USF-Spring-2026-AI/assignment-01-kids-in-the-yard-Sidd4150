@@ -14,103 +14,85 @@ class PersonFactory():
         self.genderProb = defaultdict(list)
         self.lifeProb = {}
         self.birth_marriage = {}
-        self.familyTree = None
-        
-    def create_family_tree(self):
-        #initial death
-        #TODO: make death calculation into function
-        Molly_death = 1950 + float(self.lifeProb["1950"]) + random.randint(-10,10)
-        Desmond_death = 1950 + float(self.lifeProb["1950"]) + random.randint(-10,10)
         
         
-        #intial Ages
-        #TODO: make age calculation into function 
-        Molly_age = Molly_death - 1950
-        Desmond_age = Desmond_death - 1950
-   
-    
-        Desmond_Jones = self.createChildren(None,None)
-        Desmond_Jones.firstN = "Desmond"
-        Desmond_Jones.lastN = "Jones"
-   
-        Molly_Jones = self.createChildren(None,None)
-        Molly_Jones.firstN = "Molly"
-        Molly_Jones.lastN = "Jones"
-        self.familyTree = Desmond_Jones
-        #initial Partner assignment
-        Desmond_Jones.partner = Molly_Jones
-        Molly_Jones.partner = Desmond_Jones
+    # def create_initial_people(self):
+       
+    #     Desmond_Jones = self.createChildren(None,None)
+    #     Desmond_Jones.firstN, Desmond_Jones.lastN  = "Desmond", "Jones"
         
-        #initial Children 
-        year = Molly_Jones.year_born
-        decade_key = self.get_decade(year)
-        print(decade_key)
+    #     Molly_Jones = self.createChildren(None,None)
+    #     Molly_Jones.firstN, Molly_Jones.lastN  = "Molly", "Jones"
+       
+    #     #initial Partner assignment
+    #     Desmond_Jones.partner = Molly_Jones
+    #     Molly_Jones.partner = Desmond_Jones
         
-        number_kids,_ = self.chance_kids(decade_key)
-        print(number_kids)
-
-        for _ in range(number_kids):
-            self.createChildren(Molly_Jones.year_born,Molly_Jones)
-
-        Desmond_Jones.children =  Molly_Jones.children
-
-
-
-        #Tree Building
-        # Looked up built in python queue found at https://www.geeksforgeeks.org/python/queue-in-python/
-        queue = deque()
+    #     #initial Children 
+    #     year = Molly_Jones.year_born
+    #     decade_key = self.get_decade(year)
+    #     print(decade_key)
         
-        for child in Molly_Jones.children:
-            queue.append(child)
+    #     number_kids,_ = self.chance_kids(decade_key)
+    #     print(number_kids)
 
-        while queue:
+    #     for _ in range(number_kids):
+    #         self.createChildren(Molly_Jones.year_born,Molly_Jones)
 
-            curr_person = queue.popleft()
-            _, is_married = self.chance_kids(self.get_decade(curr_person.year_born))
+    #     Desmond_Jones.children =  Molly_Jones.children
+    #     self.familyTree = Desmond_Jones
 
-            if is_married == "marry":
-                curr_person.partner = self.createChildren(curr_person.year_born + random.randint(-10,10), None)
-                if curr_person.partner == None:
-                    break
-                curr_person.partner.partner = curr_person
+       
 
+    # def create_family_tree(self, Parent):
+    #     #Tree Building
+    #     # Looked up built in python queue found at https://www.geeksforgeeks.org/python/queue-in-python/
+    #     queue = deque()
+        
+    #     for child in Parent.children:
+    #         queue.append(child)
 
-                if curr_person.age > curr_person.partner.age:
-                    number_kids,_ = self.chance_kids(self.get_decade(curr_person.year_born))
-                    for _ in range(number_kids):
-                        new_child = self.createChildren(curr_person.year_born,curr_person)
+    #     while queue:
 
-                        if new_child == None:
-                            continue
-                        
-                        print("Married:", new_child.year_born, new_child.firstN)
-                        #for child in curr_person.children:
-                        queue.append(new_child)
-                    curr_person.partner.children = curr_person.children
+    #         curr_person = queue.popleft()
+    #         _, is_married = self.chance_kids(self.get_decade(curr_person.year_born))
 
-                elif curr_person.age <= curr_person.partner.age:
-                    number_kids,_ = self.chance_kids(self.get_decade(curr_person.partner.year_born))
-                    for _ in range(number_kids):
-                        new_child = self.createChildren(curr_person.partner.year_born,curr_person.partner)
+    #         if is_married == "marry":
+    #             curr_person.partner = self.createChildren(curr_person.year_born + random.randint(-10,10), None)
+    #             if curr_person.partner == None:
+    #                 break
+    #             curr_person.partner.partner = curr_person
+ 
+    #             elder_parent = None
+            
+    #             if curr_person.age >= curr_person.partner.age:
+    #                 elder_parent = curr_person
+    #             else:
+    #                 elder_parent = curr_person.partner
+ 
+    #             number_kids,_ = self.chance_kids(self.get_decade(elder_parent.year_born))
+    #             for _ in range(number_kids):
+    #                 new_child = self.createChildren(elder_parent.year_born,elder_parent)
 
-                        if new_child == None:
-                            break
-                       
-                        print("Married:", new_child.year_born, new_child.firstN)
-                        #for child in curr_person.partner.children:
-                        queue.append(new_child)
-                    curr_person.children = curr_person.partner.children
-
-            else:
-                number_kids, _ = self.chance_kids(self.get_decade(curr_person.year_born))
-                for _ in range(number_kids):
-                    new_child = self.createChildren(curr_person.year_born,curr_person)
-
-                    if new_child == None:
-                        continue
-                    print("UnMarried:", new_child.year_born, new_child.firstN)
+    #                 if new_child == None:
+    #                     continue
                     
-                    queue.append(new_child)
+    #                 print("Married:", new_child.year_born, new_child.firstN)
+    #                 #for child in curr_person.children:
+    #                 queue.append(new_child)
+    #             elder_parent.partner.children = elder_parent.children
+
+
+    #         else:
+    #             number_kids, _ = self.chance_kids(self.get_decade(curr_person.year_born))
+    #             for _ in range(number_kids):
+    #                 new_child = self.createChildren(curr_person.year_born,curr_person)
+
+    #                 if new_child == None:
+    #                     continue
+    #                 print("UnMarried:", new_child.year_born, new_child.firstN)
+                    
+    #                 queue.append(new_child)
 
           
     def createChildren(self,Elder_Age,Parent):
@@ -220,4 +202,14 @@ class PersonFactory():
             
         
             
-  
+    def print_tree(self, person = None, space=0):
+        
+        if person == None:
+            person = self.familyTree
+        if person.partner:
+            print("    " * space, "|___Parents:", person.firstN, person.lastN,  "Life: (", person.year_born, "-", person.death, ") |Partner:",person.partner.firstN, person.partner.lastN )
+        else:
+            print("     " * space, "|___Parents:", person.firstN, person.lastN, "Life: (", person.year_born, "-", person.death, ")"  )
+    
+        for child in person.children:
+            self.print_tree(child, space + 1)
