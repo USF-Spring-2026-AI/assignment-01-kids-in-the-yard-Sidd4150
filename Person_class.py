@@ -9,6 +9,5 @@ class Person:
         self.children = []
         self.age = age
         
-    def print(self):
-        print(self.partner)
+
     

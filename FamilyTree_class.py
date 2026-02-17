@@ -1,6 +1,4 @@
-
-
-from collections import deque
+from collections import defaultdict, deque
 import random
 from Person_Factory_class import PersonFactory
 
@@ -10,9 +8,11 @@ class FamilyTree():
     def __init__(self):
         self.person1 = None
         self.person2 = None
-       
+        self.list_people = []
+
         self.Person_Factory = PersonFactory()
         self.Person_Factory.get_files()
+
     def create_initial_people(self):
        
         Desmond_Jones = self.Person_Factory.createChildren(None,None)
@@ -22,16 +22,13 @@ class FamilyTree():
         Molly_Jones.firstN, Molly_Jones.lastN  = "Molly", "Jones"
        
         #initial Partner assignment
-        Desmond_Jones.partner = Molly_Jones
-        Molly_Jones.partner = Desmond_Jones
-        self.person1 = Desmond_Jones
-        self.person2 = Molly_Jones
-        
+        Desmond_Jones.partner, Molly_Jones.partner = Molly_Jones, Desmond_Jones
+
+        self.person1, self.person2 = Desmond_Jones,  Molly_Jones
         #initial Children 
         year = Molly_Jones.year_born
         decade_key = self.Person_Factory.get_decade(year)
         print(decade_key)
-        
         number_kids,_ = self.Person_Factory.chance_kids(decade_key)
         print(number_kids)
 
@@ -39,6 +36,8 @@ class FamilyTree():
             self.Person_Factory.createChildren(Molly_Jones.year_born,Molly_Jones)
 
         Desmond_Jones.children =  Molly_Jones.children
+        self.list_people.append(Desmond_Jones)
+        self.list_people.append(Molly_Jones)
 
 
     def create_family_tree(self, Parent):
@@ -50,61 +49,72 @@ class FamilyTree():
             queue.append(child)
 
         while queue:
-
+            
             curr_person = queue.popleft()
+            self.list_people.append(curr_person)
             _, is_married = self.Person_Factory.chance_kids(self.Person_Factory.get_decade(curr_person.year_born))
 
+            curr_person.partner = self.Person_Factory.createChildren(curr_person.year_born + random.randint(-10,10), None)
+            if curr_person.partner == None:
+                continue
+            self.list_people.append(curr_person.partner)
+            curr_person.partner.partner = curr_person
+
+            elder_parent = None
             if is_married == "marry":
-                curr_person.partner = self.Person_Factory.createChildren(curr_person.year_born + random.randint(-10,10), None)
-                if curr_person.partner == None:
-                    break
-                curr_person.partner.partner = curr_person
- 
-                elder_parent = None
-            
                 if curr_person.age >= curr_person.partner.age:
                     elder_parent = curr_person
                 else:
                     elder_parent = curr_person.partner
- 
-                number_kids,_ = self.Person_Factory.chance_kids(self.Person_Factory.get_decade(elder_parent.year_born))
-                for _ in range(number_kids):
-                    new_child = self.Person_Factory.createChildren(elder_parent.year_born,elder_parent)
-
-                    if new_child == None:
-                        continue
-                    
-                    print("Married:", new_child.year_born, new_child.firstN)
-                    #for child in curr_person.children:
-                    queue.append(new_child)
-                elder_parent.partner.children = elder_parent.children
-
-
             else:
-                number_kids, _ = self.Person_Factory.chance_kids(self.Person_Factory.get_decade(curr_person.year_born))
-                for _ in range(number_kids):
-                    new_child = self.Person_Factory.createChildren(curr_person.year_born,curr_person)
+                elder_parent = curr_person
+            
+            number_kids,_ = self.Person_Factory.chance_kids(self.Person_Factory.get_decade(elder_parent.year_born))
+            for _ in range(number_kids):
+                new_child = self.Person_Factory.createChildren(elder_parent.year_born,elder_parent)
 
-                    if new_child == None:
-                        continue
-                    print("UnMarried:", new_child.year_born, new_child.firstN)
-                    
-                    queue.append(new_child)
+                if new_child == None:
+                    continue
+                
+                print("Married:", new_child.year_born, new_child.firstN)
+                #for child in curr_person.children:
+                queue.append(new_child)
+            if is_married == "marry":
+                elder_parent.partner.children = elder_parent.children 
+      
     def print_tree(self, person = None, space=0):
         
         if person == None:
             person = self.person1
         if person.partner:
-            print("    " * space, "|___Parents:", person.firstN, person.lastN,  "Life: (", person.year_born, "-", person.death, ") |Partner:",person.partner.firstN, person.partner.lastN )
+            print("    " * space, "-Parents:", person.firstN, person.lastN,  "Life: (", person.year_born, "-", person.death, ") |Partner:",person.partner.firstN, person.partner.lastN )
         else:
-            print("     " * space, "|___Parents:", person.firstN, person.lastN, "Life: (", person.year_born, "-", person.death, ")"  )
+            print("     " * space, "-Parents:", person.firstN, person.lastN, "Life: (", person.year_born, "-", person.death, ")"  )
     
         for child in person.children:
             self.print_tree(child, space + 1)
 
     def number_of_people_in_tree(self):
-        pass
+        return len(self.list_people)
+    
     def number_people_in_year(self):
-        pass
+        by_year = defaultdict(int)
+
+        for person in self.list_people:
+            by_year[person.year_born] += 1 
+        
+        for key in by_year:
+            print("For year:",key,"is",by_year[key])
+            
+    def duplicat_names(self):
+        by_year = defaultdict(int)
+
+        for person in self.list_people:
+            by_year[person.firstN+person.lastN] += 1 
+
+        for key in by_year:
+            if by_year[key] > 1:
+                print("The name", key, "is duplicated", by_year[key], "times")
+        
         
         

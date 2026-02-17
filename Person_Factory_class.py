@@ -1,7 +1,6 @@
-import pandas as pd
 import random
 import csv
-from collections import defaultdict, deque
+from collections import defaultdict
 import math
 from Person_class import Person
 
@@ -14,87 +13,8 @@ class PersonFactory():
         self.genderProb = defaultdict(list)
         self.lifeProb = {}
         self.birth_marriage = {}
+        self.rankProb = []
         
-        
-    # def create_initial_people(self):
-       
-    #     Desmond_Jones = self.createChildren(None,None)
-    #     Desmond_Jones.firstN, Desmond_Jones.lastN  = "Desmond", "Jones"
-        
-    #     Molly_Jones = self.createChildren(None,None)
-    #     Molly_Jones.firstN, Molly_Jones.lastN  = "Molly", "Jones"
-       
-    #     #initial Partner assignment
-    #     Desmond_Jones.partner = Molly_Jones
-    #     Molly_Jones.partner = Desmond_Jones
-        
-    #     #initial Children 
-    #     year = Molly_Jones.year_born
-    #     decade_key = self.get_decade(year)
-    #     print(decade_key)
-        
-    #     number_kids,_ = self.chance_kids(decade_key)
-    #     print(number_kids)
-
-    #     for _ in range(number_kids):
-    #         self.createChildren(Molly_Jones.year_born,Molly_Jones)
-
-    #     Desmond_Jones.children =  Molly_Jones.children
-    #     self.familyTree = Desmond_Jones
-
-       
-
-    # def create_family_tree(self, Parent):
-    #     #Tree Building
-    #     # Looked up built in python queue found at https://www.geeksforgeeks.org/python/queue-in-python/
-    #     queue = deque()
-        
-    #     for child in Parent.children:
-    #         queue.append(child)
-
-    #     while queue:
-
-    #         curr_person = queue.popleft()
-    #         _, is_married = self.chance_kids(self.get_decade(curr_person.year_born))
-
-    #         if is_married == "marry":
-    #             curr_person.partner = self.createChildren(curr_person.year_born + random.randint(-10,10), None)
-    #             if curr_person.partner == None:
-    #                 break
-    #             curr_person.partner.partner = curr_person
- 
-    #             elder_parent = None
-            
-    #             if curr_person.age >= curr_person.partner.age:
-    #                 elder_parent = curr_person
-    #             else:
-    #                 elder_parent = curr_person.partner
- 
-    #             number_kids,_ = self.chance_kids(self.get_decade(elder_parent.year_born))
-    #             for _ in range(number_kids):
-    #                 new_child = self.createChildren(elder_parent.year_born,elder_parent)
-
-    #                 if new_child == None:
-    #                     continue
-                    
-    #                 print("Married:", new_child.year_born, new_child.firstN)
-    #                 #for child in curr_person.children:
-    #                 queue.append(new_child)
-    #             elder_parent.partner.children = elder_parent.children
-
-
-    #         else:
-    #             number_kids, _ = self.chance_kids(self.get_decade(curr_person.year_born))
-    #             for _ in range(number_kids):
-    #                 new_child = self.createChildren(curr_person.year_born,curr_person)
-
-    #                 if new_child == None:
-    #                     continue
-    #                 print("UnMarried:", new_child.year_born, new_child.firstN)
-                    
-    #                 queue.append(new_child)
-
-          
     def createChildren(self,Elder_Age,Parent):
         #Desmond_Jones = Person(1950, Desmond_death, "Desmond", "Jones", None, None, Desmond_age)
         if not Parent and not Elder_Age:
@@ -140,7 +60,6 @@ class PersonFactory():
     def get_gender(self, decade):
         gender_vals = self.genderProb[decade]
         
-        
         genders = [item[0] for item in gender_vals]
         freq = [item[1] for item in gender_vals]
         
@@ -160,18 +79,15 @@ class PersonFactory():
         first_names = [val[1] for val in gendered_options]
         freq = [val[2] for val in gendered_options]
 
-
         name = random.choices(first_names, weights=freq, k=1)[0]
         return name
         
     def get_random_last_name(self,decade):
         lastNames = self.lastNames[decade]
-        
-        
-        list_last_names = [item[1] for item in lastNames]
 
-        random.shuffle(list_last_names)
-        name = list_last_names.pop()
+        list_last_names = [item[1] for item in lastNames]
+      
+        name = random.choices(list_last_names, weights=self.rankProb, k=1)[0]
         return name
     
     def load_csv(self, filename):
@@ -199,17 +115,10 @@ class PersonFactory():
                                         
         for rows in self.load_csv('life_expectancy.csv'):
             self.lifeProb[rows[0]] = (rows[1]) 
-            
-        
-            
-    def print_tree(self, person = None, space=0):
-        
-        if person == None:
-            person = self.familyTree
-        if person.partner:
-            print("    " * space, "|___Parents:", person.firstN, person.lastN,  "Life: (", person.year_born, "-", person.death, ") |Partner:",person.partner.firstN, person.partner.lastN )
-        else:
-            print("     " * space, "|___Parents:", person.firstN, person.lastN, "Life: (", person.year_born, "-", person.death, ")"  )
-    
-        for child in person.children:
-            self.print_tree(child, space + 1)
+
+        with open('rank_to_probability.csv', mode='r') as infile:  
+            reader = csv.reader(infile)
+            row = next(reader)                                      
+            for rows in row:
+                self.rankProb.append(float(rows))
+
