@@ -4,10 +4,10 @@ familyCreation = FamilyTree()
 
 familyCreation.create_initial_people()
 familyCreation.create_family_tree(familyCreation.person1)
-familyCreation.print_tree()
-print(familyCreation.number_of_people_in_tree())
-familyCreation.number_people_in_year()
-familyCreation.duplicat_names()
+# familyCreation.print_tree()
+# print(familyCreation.number_of_people_in_tree())
+# familyCreation.number_people_in_year()
+# familyCreation.duplicates_names()
 
 print("\nTree built")
 while True:
@@ -31,7 +31,7 @@ while True:
     elif choice == 'D':
         # Shows duplicate name statistics
         print("\nChecking for duplicate names...")
-        familyCreation.duplicat_names()
+        familyCreation.duplicates_names()
 
     elif choice == 'P':
         # Visualizes the tree
