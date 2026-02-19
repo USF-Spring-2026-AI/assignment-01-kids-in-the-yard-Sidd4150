@@ -4,10 +4,6 @@ familyCreation = FamilyTree()
 
 familyCreation.create_initial_people()
 familyCreation.create_family_tree(familyCreation.person1)
-# familyCreation.print_tree()
-# print(familyCreation.number_of_people_in_tree())
-# familyCreation.number_people_in_year()
-# familyCreation.duplicates_names()
 
 print("\nTree built")
 while True:
@@ -16,15 +12,16 @@ while True:
     print("(Y) for number of people in the tree per year")
     print("(D) for number of people duplicate people")
     print("(P) to print tree\n")
+    print("(Q) to quit")
     choice = input("Selection: ").strip().upper()
 
     if choice == 'N':
-        # Calling your method to get the total count
+        # Calling method to get the total count
         count = familyCreation.number_of_people_in_tree()
         print(f"\nTotal people in the tree: {count}")
 
     elif choice == 'Y':
-        # This calls your method that prints people per year
+        # This calls method that prints people per year
         print("\nPeople born per year:")
         familyCreation.number_people_in_year()
 
@@ -40,7 +37,8 @@ while True:
 
     elif choice == 'Q':
         print("Exiting... Goodbye!")
-        break # Breaks the while loop to end the program
+        break 
+        # Breaks the while loop to end the program
 
     else:
         print("Invalid selection. Please try again.")

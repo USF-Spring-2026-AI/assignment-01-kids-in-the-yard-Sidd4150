@@ -15,8 +15,10 @@ class PersonFactory():
         self.birth_marriage = {}
         self.rank_prob = []
         
+    # Create a person
     def create_person(self,Elder_Age,Parent):
-        #Desmond_Jones = Person(1950, Desmond_death, "Desmond", "Jones", None, None, Desmond_age)
+        
+        # Determine the year of birth
         if not Parent and not Elder_Age:
             year_born = 1950
         elif Parent == None:
@@ -26,12 +28,17 @@ class PersonFactory():
         #Make sure not past 2120
         if year_born > 2120:
             return None
-        
+        # Determine the death year
         death = year_born + float(self.life_prob[str(year_born)])+ random.randint(-10,10) 
+        # Determine the decade of the person
         decade_key = self.get_decade(year_born)
+        # Determine the gender of the person
         gender = self.get_gender(decade_key)
+        # Determine the first name of the person
         first_name = self.first_gen(decade_key,gender)
+        # Determine the last name of the person
         random_last_name = self.get_random_last_name(decade_key)
+        # Create a new person
 
         New_Child = Person(
             year_born,
@@ -42,7 +49,8 @@ class PersonFactory():
             None,
             death-year_born,       
         )
-
+        
+        # If the parent is not None, add the child to the parent's children
         if Parent != None:
             Parent.children.append(New_Child)
         
