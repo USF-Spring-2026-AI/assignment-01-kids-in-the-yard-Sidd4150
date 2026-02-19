@@ -1,0 +1,14 @@
+-Awad distinguishes between different “types” of AI. What classification scheme does the paper use and why do these types matter for scientific research?
+Awad says that Ai is not a monolith and he classifies Ai as a constellation of paradigms. Some of the paradigms were Foundational Paradigms and Decision-oriented paradigms. These matter because AI tools make the analytical and creative dimensions of scientific work better.
+
+-Does Awad make a clear distinction between AI as a tool and AI as a scientific collaborator? If so, what are the differences and what are some examples given to support the differences? 
+Yes, Awad says that ai not only acts as a tool , but also as an epistemic agent. Ai as a tool performs defined tasks with the help of a human. While as a collaborator it acts as a “junior researcher” and operates with autonomy and makes its own decisions. Some examples of Ai as a tool is DeepSea which analyzes genomic sequences to predict the effects of noncoding variants on disease risk. While Ai as a collaborator, we have an example with Meta-scientific AI, like Sci agent. Which, have their own hypotheses and generate their own experiments.
+
+-Do these examples suggest a real shift in how science is conducted, or mostly an extension of existing methods?
+I believe that the examples do suggest a shift in how science is conducted and will help further scientists and allow them to implement test more easily. We read that “This kind of AI simulation can assist policymakers by allowing them to test how different policy decisions might encourage people to act more cooperatively in society – without needing to run costly or challenging experiments with real people” (Awad) “ Which shows us that Ai is helping scientist find ways to create real viable solutions with ai for cheaper and more easily. 
+-What are some limitations or risks of using AI in science? How do these relate to issues such as interpretability, bias, reproducibility, or theory formation?
+
+We read that the Galactica model that was trained on millions of scientific papers was pulled days after launch because of hallucinations. The Ai was lying about data but saying it like it was fact, which is a limitation. Also the black box, the ai gets to the result with some models without us really knowing what happened leading to bias or other unintended consequences in the output.
+-According to Awad’s arguments, is AI more likely to accelerate scientific discovery or to reshape the scientific method itself? Do you agree or disagree?
+According to Awad’s arguments, AI is more likely to re-shape the scientific method itself. I agree, as it seems from the reading that scientists are already using artificial intelligence as people to save cost on human experiments. Re-shaping how scientists study data and are saving costs from it as well. Pushing them to continue to use ai as a way to reshape the scientific method
+
